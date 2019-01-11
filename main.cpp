@@ -19,6 +19,6 @@ int main() {
             }
         }
     }
-    matrix.printByRows();
+    matrix.print();
     return 0;
 }

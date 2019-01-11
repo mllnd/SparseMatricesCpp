@@ -6,8 +6,6 @@ class Cell {
     private:
         Cell* next_cell_row;
         Cell* next_cell_col;
-        //Cell* prevCellRow;
-        //Cell* prevCellCol;
         int value;
         int row_id;
         int col_id;

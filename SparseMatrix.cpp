@@ -17,7 +17,6 @@ SparseMatrix::SparseMatrix(const int row_size, const int col_size) {
  * @param SparseMatrix
  */
 SparseMatrix::SparseMatrix(const SparseMatrix &base) {
-    std::cout << "Creating matrix using copy constructor \n\n";
     row_size = base.row_size;
     col_size = base.col_size;
     wrapper(row_size, col_size);
@@ -40,7 +39,6 @@ SparseMatrix::~SparseMatrix() {
             delete(printer);
             printer = temp2;
         }
-        //cout<<"switching row\n\n";
         Cell* remove_counter = temp->next_cell_row;
         delete(temp);
         temp = remove_counter;
@@ -78,9 +76,9 @@ int SparseMatrix::getSizeRows() {
  */
 void SparseMatrix::addValue(const int value, const int row, const int col) {
     if (row > col_size || col > row_size || row < 0 || col < 0) {
-        throw "Error, Matrix index out of bounds";
+        throw "Error - matrix index out of bounds!";
     } else {
-//        std::cout << "adding cell " << value << "\n";
+        // Skip zero values
         if (value != 0) {
             Cell* cell_to_add = new Cell();
             cell_to_add->col_id = col;
@@ -90,14 +88,18 @@ void SparseMatrix::addValue(const int value, const int row, const int col) {
             cell_to_add->next_cell_col = previous_col->next_cell_col;
             previous_col->next_cell_col = cell_to_add;
             Cell* previous_row = getPrevRow(row, col);
-            //cout << previous_row->value << " prevRowValues\n";
             cell_to_add->next_cell_row = previous_row->next_cell_row;
             previous_row->next_cell_row = cell_to_add;
         }
     }
 }
 
-//return previous element in row to tobe added one
+/**
+ * Return the previous element in row
+ * @param integer
+ * @param integer
+ * @return
+ */
 Cell* SparseMatrix::getPrevRow(int row, int col) {
     Cell* tracker = cell_pointer;
     Cell* temp = cell_pointer->next_cell_col;
@@ -118,7 +120,12 @@ Cell* SparseMatrix::getPrevRow(int row, int col) {
     }
 }
 
-//return previous element in col to tobe added one
+/**
+ * Return the previous element in column
+ * @param integer
+ * @param integer
+ * @return
+ */
 Cell* SparseMatrix::getPrevCol(int row, int col) {
     Cell* tracker = cell_pointer;
     Cell* temp = cell_pointer->next_cell_row;
@@ -137,50 +144,58 @@ Cell* SparseMatrix::getPrevCol(int row, int col) {
     }
 }
 
+/**
+ * Standard print - print all values in the matrix
+ */
 void SparseMatrix::print() {
     Cell* temp = cell_pointer->next_cell_row;
     for (int i = 0; i < row_size; i++) {
         Cell* printer = temp->next_cell_col;
-        std::cout << temp->value << " is pointing to " << temp->next_cell_col->value << " \n\n";
+        std::cout << temp->value << " is pointing to " << temp->next_cell_col->value << "\n";
         while (printer != temp) {
-            std::cout << printer->value << " is pointing to " << printer->next_cell_col->value << " \n\n";
-//            cout << "On location " << printer->row_id << " , " << printer->col_id << " there is " << printer->value << "\n\n";
+            std::cout << printer->value << " is pointing to " << printer->next_cell_col->value << "\n";
             printer = printer->next_cell_col;
         }
-//        cout<<"switching row\n\n";
         temp = temp->next_cell_row;
     }
 }
 
+/**
+ * Print all non-empty (not zero) rows
+ */
 void SparseMatrix::printByRows() {
     Cell* temp = cell_pointer->next_cell_col;
     for (int i = 0; i < col_size; i++) {
         Cell* printer = temp->next_cell_row;
-        //cout << temp->value << " is pointing to " << temp->next_cell_row->value << " \n\n";
         while (printer != temp) {
-            //cout << printer->value << " is pointing to " << printer->next_cell_row->value << " \n\n";
-            std::cout << "On location " << printer->row_id << " , " << printer->col_id << " there is " << printer->value << "\n\n";
+            std::cout << "Location " << printer->row_id << ";" << printer->col_id << " -> " << printer->value << "\n";
             printer = printer->next_cell_row;
         }
-        //cout<<"switching row\n\n";
         temp = temp->next_cell_col;
     }
 }
 
+/**
+ * Print the whole matrix by utilizing the getElement method
+ */
 void SparseMatrix::printByGet() {
     for (int i = 0; i < row_size; i++) {
         for (int j = 0; j < col_size; j++) {
-            std::cout << "On location " << j << " , " << i << " there is " << getElement(j, i) << " \n";
+            std::cout << "Location " << j << ";" << i << " -> " << getElement(j, i) << "\n";
         }
     }
 }
 
-//retrieving specific element in sparse matrix, implements checks and uses getPrevCol function
-double SparseMatrix::getElement(const int row, const int col) const{
+/**
+ * Retrieve a specific element from matrix
+ * @param integer
+ * @param integer
+ * @return double
+ */
+double SparseMatrix::getElement(const int row, const int col) const {
     if (row > col_size || row < 0 || col > row_size || col < 0) {
-        throw "Error while getting an element, index out of bounds";
+        throw "Error while getting an element - index out of bounds!";
     } else {
-        //Cell* temp = getPrevCol(0, col);
         Cell* temp = cell_pointer->next_cell_row;
         for (int i = 0; i < col; i++) {
             temp = temp->next_cell_row;
@@ -195,20 +210,23 @@ double SparseMatrix::getElement(const int row, const int col) const{
         return 0;
     }
 }
-//need to finnish this
-void SparseMatrix::setElement(int value, int row,int col) {
+/**
+ * Set a specific element in matrix
+ * @param integer
+ * @param integer
+ * @param integer
+ */
+void SparseMatrix::setElement(int value, int row, int col) {
     if (row > col_size || col > row_size || row < 0 || col < 0) {
-        throw "Error, Matrix index out of bounds";
+        throw "Error - Matrix index out of bounds!";
     } else {
-        Cell* previous_col = getPrevCol(row , col);
-        //cout << previous_col->value << "\n\n\n";
+        Cell* previous_col = getPrevCol(row, col);
         previous_col->next_cell_col->value = value;
 
     }
 }
 
-//finnish and test this
-SparseMatrix& SparseMatrix::operator =(const SparseMatrix& sparse_matrix) {
+SparseMatrix& SparseMatrix::operator =(const SparseMatrix &sparse_matrix) {
     SparseMatrix *destruct = this;
     wrapper(sparse_matrix.row_size, sparse_matrix.col_size);
     for (int i = 0; i < col_size; i++) {
@@ -219,22 +237,18 @@ SparseMatrix& SparseMatrix::operator =(const SparseMatrix& sparse_matrix) {
     return *this;
 }
 
-// if element in current martixe is 0 but not in second one new element is added
-// if addition of two values yelds 0 element is removed
-SparseMatrix& SparseMatrix::operator +=(const SparseMatrix& sparse_matrix) {
+SparseMatrix& SparseMatrix::operator +=(const SparseMatrix &sparse_matrix) {
     if (row_size != sparse_matrix.row_size || col_size != sparse_matrix.col_size) {
-        throw "Error during addition, matrices have different dimensions";
+        throw "Error during addition - matrices have different dimensions!";
     } else {
         for (int i = 0; i < col_size; i++) {
             for (int j = 0; j < row_size; j++) {
                 int value_in_this = this->getElement(i, j);
                 int value_in_right_operand = sparse_matrix.getElement(i, j);
-                //cout << this->getElement(i, j) << " is value on " << i << " , " << j << "\n";
                 if (value_in_this == 0) {
                     this->addValue(value_in_right_operand, i, j);
                 } else {
                     int value_to_add = value_in_this + value_in_right_operand;
-                    //cout << "for " << i << " , " << j << " pair sum is " << value_to_add << "\n";
                     if (value_to_add == 0) {
                         this->removeElement(i, j);
                     } else {
@@ -249,12 +263,11 @@ SparseMatrix& SparseMatrix::operator +=(const SparseMatrix& sparse_matrix) {
 
 SparseMatrix& SparseMatrix::operator -=(const SparseMatrix& sparse_matrix) {
     if (row_size != sparse_matrix.row_size || col_size != sparse_matrix.col_size) {
-        throw "Error during addition, matrices have different dimensions";
+        throw "Error during addition, matrices have different dimensions!";
     } else {
         for (int i = 0; i < col_size; i++) {
             for (int j = 0; j < row_size; j++) {
                 if (this->getElement(i, j) == 0) {
-                    //int add = sparse_matrix.getElement(i, j);
                     this->addValue(-sparse_matrix.getElement(i, j), i, j);
                 } else {
                     int value_to_add = this->getElement(i, j) - sparse_matrix.getElement(i, j);
@@ -272,20 +285,20 @@ SparseMatrix& SparseMatrix::operator -=(const SparseMatrix& sparse_matrix) {
 
 SparseMatrix& SparseMatrix::operator *=(const SparseMatrix& sparse_matrix) {
     if (row_size != sparse_matrix.col_size) {
-        throw "Error, Matrices can not be multiplied";
+        throw "Error, Matrices can not be multiplied!";
     } else {
         int counter = 0;
-        SparseMatrix toReturn(col_size, sparse_matrix.row_size);
+        SparseMatrix new_matrix(col_size, sparse_matrix.row_size);
         for (int i = 0; i < col_size; i++) {
             for (int j = 0; j < sparse_matrix.row_size; j++) {
                 for (int k = 0; k < row_size; k++) {
                     counter += getElement(i, k) * sparse_matrix.getElement(k, j);
                 }
-                toReturn.addValue(counter, j, i);
+                new_matrix.addValue(counter, j, i);
                 counter = 0;
             }
         }
-        *this = toReturn;
+        *this = new_matrix;
         return *this;
     }
 }
@@ -299,15 +312,20 @@ void SparseMatrix::operator ^(const int number) {
 }
 
 SparseMatrix SparseMatrix::operator !() {
-    SparseMatrix toReturn(col_size, row_size);
+    SparseMatrix new_matrix(col_size, row_size);
     for (int i = 0; i < col_size; i++) {
         for (int j = 0; j < row_size; j++) {
-            toReturn.addValue(this->getElement(i, j), j, i);
+            new_matrix.addValue(this->getElement(i, j), j, i);
         }
     }
-    return toReturn;
+    return new_matrix;
 }
 
+/**
+ * Remove a specific element from matrix
+ * @param integer
+ * @param integer
+ */
 void SparseMatrix::removeElement(int row, int col) {
     Cell* previous_col = getPrevCol(row , col);
     Cell* previous_row = getPrevRow(row, col);
@@ -319,6 +337,12 @@ void SparseMatrix::removeElement(int row, int col) {
     delete(cell_to_remove);
 }
 
+
+/**
+ * Initialize the matrix
+ * @param integer
+ * @param integer
+ */
 void SparseMatrix::wrapper(int row_size, int col_size) {
     this->row_size = row_size;
     this->col_size = col_size;
@@ -329,7 +353,6 @@ void SparseMatrix::wrapper(int row_size, int col_size) {
     int col_tracker = -1;
     Cell* temp;
     temp = cell_pointer;
-    //initialize row of pointers to values
     for (int i = 0; i < row_size; i++) {
         col_tracker++;
         temp->next_cell_row = new Cell;
@@ -339,10 +362,8 @@ void SparseMatrix::wrapper(int row_size, int col_size) {
         temp = temp->next_cell_row;
     }
     temp->next_cell_row = cell_pointer;
-    //moving temp pointer back to (0,0)
     temp = cell_pointer;
     col_tracker = -1;
-    //initialize column of pointers to values
     for (int i = 0; i < col_size; i++) {
         row_tracker++;
         temp->next_cell_col = new Cell;
@@ -399,7 +420,7 @@ SparseMatrix operator -(SparseMatrix &matrix_1, SparseMatrix &matrix_2) {
     }
 }
 
-SparseMatrix operator*(SparseMatrix &matrix_1, SparseMatrix &matrix_2) {
+SparseMatrix operator *(SparseMatrix &matrix_1, SparseMatrix &matrix_2) {
     if (matrix_1.row_size != matrix_2.col_size) {
         throw "Error, Matrices can not be multiplied";
     } else {
@@ -421,7 +442,7 @@ SparseMatrix operator*(SparseMatrix &matrix_1, SparseMatrix &matrix_2) {
 ostream& operator <<(ostream &os, const SparseMatrix &matrix_1) {
     for (int i = 0; i < matrix_1.col_size; i++) {
         for (int j = 0; j < matrix_1.row_size; j++) {
-            os << matrix_1.getElement(i, j) << " is the value on position " << i << " , " << j << "\n\n";
+            os << matrix_1.getElement(i, j) << " is the value on position " << i << ";" << j << "\n\n";
         }
     }
     return os;
@@ -430,7 +451,7 @@ ostream& operator <<(ostream &os, const SparseMatrix &matrix_1) {
 istream& operator >>(istream &is, SparseMatrix &matrix_1) {
     for (int i = 0; i < matrix_1.getSizeCols(); i++) {
         for (int j = 0; j < matrix_1.getSizeRows(); j++) {
-            std::cout << "Enter integer value for position (" << i << " , " << j << " )";
+            std::cout << "Enter integer value for position (" << i << ";" << j << ")";
             int value;
             is >> value;
             matrix_1.addValue(value, i, j);

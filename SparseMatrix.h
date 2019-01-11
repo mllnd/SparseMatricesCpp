@@ -33,7 +33,6 @@ class SparseMatrix {
         int row_size;
         int col_size;
         Cell* cell_pointer;
-        int element_number;
         void wrapper(int row_size, int col_size);
         Cell* getPrevCol(int row, int col);
         Cell* getPrevRow(int row, int col);
