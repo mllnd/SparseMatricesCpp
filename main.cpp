@@ -1,6 +1,7 @@
 #include <iostream>
 #include "SparseMatrix.h"
 #include "Cell.h"
+#include <ctime>
 
 int main() {
     /* Test the functionality */
