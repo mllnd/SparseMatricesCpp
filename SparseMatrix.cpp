@@ -80,7 +80,7 @@ void SparseMatrix::addValue(const int value, const int row, const int col) {
     if (row > col_size || col > row_size || row < 0 || col < 0) {
         throw "Error, Matrix index out of bounds";
     } else {
-        //cout << "adding cell " << value << "\n";
+//        std::cout << "adding cell " << value << "\n";
         if (value != 0) {
             Cell* cell_to_add = new Cell();
             cell_to_add->col_id = col;
@@ -144,10 +144,10 @@ void SparseMatrix::print() {
         std::cout << temp->value << " is pointing to " << temp->next_cell_col->value << " \n\n";
         while (printer != temp) {
             std::cout << printer->value << " is pointing to " << printer->next_cell_col->value << " \n\n";
-            //cout << "On location " << printer->row_id << " , " << printer->col_id << " there is " << printer->value << "\n\n";
+//            cout << "On location " << printer->row_id << " , " << printer->col_id << " there is " << printer->value << "\n\n";
             printer = printer->next_cell_col;
         }
-        //cout<<"switching row\n\n";
+//        cout<<"switching row\n\n";
         temp = temp->next_cell_row;
     }
 }
@@ -179,8 +179,7 @@ void SparseMatrix::printByGet() {
 double SparseMatrix::getElement(const int row, const int col) const{
     if (row > col_size || row < 0 || col > row_size || col < 0) {
         throw "Error while getting an element, index out of bounds";
-    }
-    else {
+    } else {
         //Cell* temp = getPrevCol(0, col);
         Cell* temp = cell_pointer->next_cell_row;
         for (int i = 0; i < col; i++) {
